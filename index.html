@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Camera Feed</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        video {
+            border: 2px solid #333;
+            width: 80%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h2 id="device-name">Device Name: </h2>
+    <video id="video" autoplay playsinline></video>
+
+    <script>
+        // Function to start the video stream
+        async function startVideo() {
+            try {
+                // Access the user's camera
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const videoElement = document.getElementById('video');
+                videoElement.srcObject = stream;
+
+                // Get device information
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                const deviceName = videoDevices.length > 0 ? videoDevices[0].label : 'No camera found';
+                
+                // Display the device name
+                document.getElementById('device-name').innerText = `Device Name: ${deviceName}`;
+            } catch (error) {
+                console.error('Error accessing the camera: ', error);
+                alert('Could not access the camera. Please check your permissions.');
+            }
+        }
+
+        // Start the video stream when the page loads
+        window.onload = startVideo;
+    </script>
+</body>
+</html>
